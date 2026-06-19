@@ -1,1 +1,41 @@
-<h1>Pokemon List</h1>
+<html xmlns:th="http://www.thymeleaf.org" lang="de">
+    <head>
+        <h1>Pokemon Liste</h1>
+        <style>
+            body { font-family: 'Segoe UI', sans-serif; margin: 40px; background-color: #f5dce0; }
+            h1 { text-shadow: 2px 2px 0px #00008b, -2px -2px 0px #00008b; color: #fdda0d;}
+            table {
+                border-collapse: collapse;
+                width: 100%;
+            }
+            th, td {
+                background-color: #ffffff;
+                border: 1px solid black;
+                padding: 8px;
+                text-align: left;
+            }
+        </style>
+    </head>
+    <body>
+        <table>
+            <thead>
+                <tr>
+                    <th>Nr.</th>
+                    <th>Name</th>
+                    <th>Typ</th>
+                    <th>Stark gegen</th>
+                    <th>Anfällig gegen</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td th:text="${pokedex}"></td>
+                    <td th:text="${pokemon}"></td>
+                    <td th:text="${type}"></td>
+                    <td th:text="${strongAgainst}"></td>
+                    <td th:text="${vulnerableTo}"></td>
+                </tr>
+            </tbody>
+        </table>
+    </body>
+</html>
