@@ -21,26 +21,6 @@ public class PokemonController {
 
 	@GetMapping({"", "/"})
 	public String listPokemon(Model model) {
-//		List<Pokemon> pokemonList = new ArrayList<>();
-//		pokemonList.add(new Pokemon(700, "Feelinara"));
-//		pokemonList.add(new Pokemon(778, "Mimigma"));
-
-
-//		List<Map<String, String>> pokemonList = new ArrayList<>();
-//		pokemonList.add(Map.of(
-//			"pokedexNumber", "700",
-//			"pokemonName", "Feelinara",
-//			"types", "Fee",
-//			"strongAgainst", "Drache, Kampf, Unlicht",
-//			"vulnerableTo", "Stahl, Gift"
-//		));
-//		pokemonList.add(Map.of(
-//			"pokedexNumber", "778",
-//			"pokemonName", "Mimigma",
-//			"types", "Geist, Fee",
-//			"strongAgainst", "Geist, Psycho, Unlicht, Drache, Kampf",
-//			"vulnerableTo", "Stahl, Geist"
-//		));
 
 
 		List<Pokemon> pokemonList = pokemonService.getPokemons();
