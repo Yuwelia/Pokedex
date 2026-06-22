@@ -1,6 +1,6 @@
 <html xmlns:th="http://www.thymeleaf.org" lang="de">
     <head>
-        <h1>Pokemon Liste</h1>
+        <h1>Pokedex</h1>
         <style>
             body { font-family: 'Segoe UI', sans-serif; margin: 40px; background-color: #f5dce0; }
             h1 { text-shadow: 2px 2px 0px #00008b, -2px -2px 0px #00008b; color: #fdda0d;}
@@ -28,12 +28,14 @@
                 </tr>
             </thead>
             <tbody>
-                <tr>
-                    <td th:text="${pokedex}"></td>
-                    <td th:text="${pokemon}"></td>
-                    <td th:text="${type}"></td>
-                    <td th:text="${strongAgainst}"></td>
-                    <td th:text="${vulnerableTo}"></td>
+                <tr th:each="pokemon : ${pokemonList}">
+                    <td th:text="${pokemon.id}" />
+                    <td th:text="${pokemon.name}" />
+<!--                    <td th:text="${pokemon.pokedexNumber}" />-->
+<!--                    <td th:text="${pokemon.pokemonName}" />-->
+<!--                    <td th:text="${pokemon.types}" />-->
+<!--                    <td th:text="${pokemon.strongAgainst}" />-->
+<!--                    <td th:text="${pokemon.vulnerableTo}" />-->
                 </tr>
             </tbody>
         </table>
