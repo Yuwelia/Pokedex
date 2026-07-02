@@ -17,8 +17,19 @@ public class PokemonRepository {
 	private JdbcTemplate jdbcTemplate;
 
 	public List<Pokemon> listAll() {
+
 		return jdbcTemplate.query(
-			"SELECT id, name FROM pokemon",
+			"SELECT " +
+				"pokemon.id, " +
+				"pokemon.name, " +
+				"GROUP_CONCAT(type.name SEPARATOR ', ') AS types " +
+				"FROM pokemon " +
+				"LEFT JOIN pokemon_type " +
+				"ON pokemon.id = pokemon_type.pokemon_fk " +
+				"LEFT JOIN type " +
+				"ON pokemon_type.type_fk = type.id " +
+				"GROUP BY pokemon.id " +
+				"ORDER BY pokemon.id;",
 			new PokemonMapper()
 		);
 	}
@@ -28,7 +39,10 @@ public class PokemonRepository {
 		public Pokemon mapRow(ResultSet resultSet, int rowNum) throws SQLException {
 			return new Pokemon(
 				resultSet.getInt("id"),
-				resultSet.getString("name")
+				resultSet.getString("name"),
+				resultSet.getString("types"),
+				null,
+				null
 			);
 		}
 	}

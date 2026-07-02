@@ -31,6 +31,9 @@
                 <tr th:each="pokemon : ${pokemonList}">
                     <td th:text="${pokemon.id}" />
                     <td th:text="${pokemon.name}" />
+                    <td th:text="${pokemon.types}" />
+                    <td th:text="${pokemon.strongAgainst}" />
+                    <td th:text="${pokemon.vulnerableTo}" />
 <!--                    <td th:text="${pokemon.pokedexNumber}" />-->
 <!--                    <td th:text="${pokemon.pokemonName}" />-->
 <!--                    <td th:text="${pokemon.types}" />-->
