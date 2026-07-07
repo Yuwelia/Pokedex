@@ -40,9 +40,7 @@ public class PokemonRepository {
 			return new Pokemon(
 				resultSet.getInt("id"),
 				resultSet.getString("name"),
-				resultSet.getString("types"),
-				null,
-				null
+				resultSet.getString("types")
 			);
 		}
 	}

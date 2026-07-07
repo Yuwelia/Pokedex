@@ -1,13 +1,13 @@
 package com.schulze.elena.pokedex.service;
 
 import com.schulze.elena.pokedex.model.Pokemon;
+import com.schulze.elena.pokedex.model.Trainer;
 import com.schulze.elena.pokedex.repository.PokemonRepository;
+import com.schulze.elena.pokedex.repository.TrainerRepository;
 import com.schulze.elena.pokedex.repository.TypeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -17,14 +17,15 @@ public class PokemonService {
 	private PokemonRepository pokemonRepository;
 	@Autowired
 	TypeRepository typeRepository;
+	@Autowired
+	private TrainerRepository trainerRepository;
+
 
 	public List<Pokemon> getPokemons() {
 		List<Pokemon> pokemons = pokemonRepository.listAll();
-		for (Pokemon pokemon : pokemons) {
-			pokemon.setType(pokemon.getTypes().replace("[", "").replace("]", ""));
-		}
 
 		setTypeAndReactions(pokemons);
+		setTrainer(pokemons);
 
 		return pokemons;
 	}
@@ -51,6 +52,13 @@ public class PokemonService {
 			List<String> vulnerableToList = typeRepository.getVulnerableToTypes(typ1, typ2);
 			String vulnerableTo = vulnerableToList.stream().collect(Collectors.joining(", "));
 			pokemon.setVulnerableTo(vulnerableTo);
+		}
+	}
+
+	private void setTrainer(List<Pokemon> pokemons) {
+		for (Pokemon pokemon : pokemons) {
+			pokemon.setTrainer(trainerRepository.getTrainer(pokemon.getId()));
+//			pokemon.getTrainer().setPokemonList(trainerRepository.getTrainerPokemonList());
 		}
 	}
 }
