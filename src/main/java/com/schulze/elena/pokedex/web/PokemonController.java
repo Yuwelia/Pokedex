@@ -28,8 +28,6 @@ public class PokemonController {
 
 	@GetMapping("/{id}")
 	public String getPokemon(@PathVariable int id, Model model) {
-		model.addAttribute("pokemonDetails", "Detail Seite");
-
 		List<Pokemon> pokemonList = pokemonService.getPokemons();
 
 		for (Pokemon pokemon : pokemonList) {

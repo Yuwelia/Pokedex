@@ -8,12 +8,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @RequestMapping("/trainer")
 public class TrainerController {
 
-	@GetMapping
+	@GetMapping({"", "/"})
 	public String listTrainer() {
 		return "trainer/list.xhtml";
 	}
 
-	@GetMapping("/{id}")
+	@GetMapping("/{name}")
 	public String getTrainer() {
 		return "trainer/detail.xhtml";
 	}

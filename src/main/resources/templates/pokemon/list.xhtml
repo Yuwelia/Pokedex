@@ -30,16 +30,10 @@
             <tbody>
                 <tr th:each="pokemon : ${pokemonList}">
                     <td th:text="${pokemon.id}" />
-<!--                    <td> <a th:href="@{/pokemon/(${pokemon.id})}" th:text="${pokemon.name}" /> </td>-->
                     <td> <a th:href="@{/pokemon/{id}(id=${pokemon.id})}" th:text="${pokemon.name}" /> </td>
                     <td th:text="${pokemon.types}" />
                     <td th:text="${pokemon.strongAgainst}" />
                     <td th:text="${pokemon.vulnerableTo}" />
-<!--                    <td th:text="${pokemon.pokedexNumber}" />-->
-<!--                    <td th:text="${pokemon.pokemonName}" />-->
-<!--                    <td th:text="${pokemon.types}" />-->
-<!--                    <td th:text="${pokemon.strongAgainst}" />-->
-<!--                    <td th:text="${pokemon.vulnerableTo}" />-->
                 </tr>
             </tbody>
         </table>
