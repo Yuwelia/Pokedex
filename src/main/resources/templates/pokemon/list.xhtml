@@ -1,6 +1,5 @@
 <html xmlns:th="http://www.thymeleaf.org" lang="de">
     <head>
-        <h1>Pokedex</h1>
         <style>
             body { font-family: 'Segoe UI', sans-serif; margin: 40px; background-color: #f5dce0; }
             h1 { text-shadow: 2px 2px 0px #00008b, -2px -2px 0px #00008b; color: #fdda0d;}
@@ -17,7 +16,12 @@
         </style>
     </head>
     <body>
-        <table>
+
+    <div th:replace="~{fragments/header.xhtml :: header}"></div>
+
+    <h1>Pokedex</h1>
+
+    <table>
             <thead>
                 <tr>
                     <th>Nr.</th>
