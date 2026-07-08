@@ -19,44 +19,38 @@
         }
     </style>
 </head>
-<!--<body>-->
-<!--<table border="1">-->
-<!--    <tr>-->
-<!--        <td width="300" height="300" align="center">-->
-<!--            <img th:src="@{/trainerImages/{name}.png(name=${pokemon.id})}" style="width:300px;height:300px;" />-->
-<!--        </td>-->
-<!--        <td>-->
-<!--            <table style="width: 100%; height: 100%; border-collapse: collapse;">-->
-<!--                <tr>-->
-<!--                    <td>Nr.</td>-->
+<body>
+<table border="1">
+    <tr>
+        <td width="300" height="300" align="center">
+            <img th:src="@{/trainerImages/{name}.png(name=${trainer.name})}" style="width:200px;height:300px;" />
+        </td>
+        <td>
+            <table style="width: 100%; height: 100%; border-collapse: collapse;">
+                <tr>
+                    <td>Titel</td>
+                    <td th:text="${trainer.title}" />
+                </tr>
+                <tr>
+                    <td>Name</td>
+                    <td th:text="${trainer.name}" />
+                </tr>
+                <tr>
+                    <td>Region</td>
+                    <td th:text="${trainer.region}" />
+                </tr>
+            </table>
+<!--            <table>-->
+<!--                <th>Pokemon Liste</th>-->
+<!--                <tr th:each="pokemon : ${pokemonList}">-->
 <!--                    <td th:text="${pokemon.id}" />-->
 <!--                </tr>-->
-<!--                <tr>-->
-<!--                    <td>Name</td>-->
-<!--                    <td th:text="${pokemon.name}" />-->
-<!--                </tr>-->
-<!--                <tr>-->
-<!--                    <td>Typ</td>-->
-<!--                    <td th:text="${pokemon.types}" />-->
-<!--                </tr>-->
-<!--                <tr>-->
-<!--                    <td>Stark gegen</td>-->
-<!--                    <td th:text="${pokemon.strongAgainst}" />-->
-<!--                </tr>-->
-<!--                <tr>-->
-<!--                    <td>Anfällig gegen</td>-->
-<!--                    <td th:text="${pokemon.vulnerableTo}" />-->
-<!--                </tr>-->
-<!--                <tr>-->
-<!--                    <td>Trainer</td>-->
-<!--                    <td th:text="${pokemon.trainer.name}" />-->
-<!--                </tr>-->
 <!--            </table>-->
-<!--        </td>-->
-<!--    </tr>-->
-<!--</table>-->
-<!--<button>Hinzufügen</button>-->
-<!--<button>Bearbeiten</button>-->
-<!--<button>Löschen</button>-->
-<!--</body>-->
-<!--</html>-->
+        </td>
+    </tr>
+</table>
+<button>Hinzufügen</button>
+<button>Bearbeiten</button>
+<button>Löschen</button>
+</body>
+</html>

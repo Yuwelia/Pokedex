@@ -3,7 +3,9 @@ VALUES
     (1, 'Lola', 'Captain', 'Alola'),
     (2, 'N (Natural Harmonia Gropius)', 'König', 'Einall'),
     (3, 'Serena', NULL, 'Kalos'),
-    (4, 'Amalia', 'Meteoraner', 'Hoenn');
+    (4, 'Amalia', 'Meteoraner', 'Hoenn'),
+    (5, 'Xenia', 'Wettbewerbssternchen', 'Hoenn'),
+    (6, 'Troy', 'Champ', 'Hoenn');
 
 INSERT INTO pokemon (id, name, trainer_fk)
 VALUES
@@ -11,7 +13,10 @@ VALUES
     (643, 'Reshiram', 2),
     (700, 'Feelinara', 3),
     (384, 'Rayquaza', 4),
-    (293, 'Flurmel', 4);
+    (293, 'Flurmel', 4),
+    (334, 'Altaria', 5),
+    (376, 'Metagross', 6);
+--     (1, 'Bisasam', NULL);
 
 INSERT INTO pokemon_type (pokemon_fk, type_fk)
 VALUES
@@ -26,7 +31,16 @@ VALUES
     (384, 12),
     (384, 13),
 
-    (293, 14);
+    (293, 14),
+
+    (334, 12),
+    (334, 13),
+
+    (376, 7),
+    (376, 17),
+
+    (1, 4),
+    (1, 16);
 
 INSERT INTO type (id, name)
 VALUES

@@ -1,6 +1,6 @@
-CREATE TABLE trainer (id int, name varchar(30), title varchar(15), region varchar(15));
+CREATE TABLE trainer (id int, name varchar(30), title varchar(30), region varchar(30));
 
-CREATE TABLE pokemon (id int, name varchar(15), trainer_fk int);
+CREATE TABLE pokemon (id int, name varchar(30), trainer_fk int);
 
 CREATE TABLE pokemon_type (type_fk int, pokemon_fk int);
 
