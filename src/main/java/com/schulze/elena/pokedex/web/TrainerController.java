@@ -1,5 +1,6 @@
 package com.schulze.elena.pokedex.web;
 
+import com.schulze.elena.pokedex.model.Pokemon;
 import com.schulze.elena.pokedex.model.Trainer;
 import com.schulze.elena.pokedex.service.TrainerService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,8 +18,12 @@ public class TrainerController {
 	@Autowired
 	private TrainerService trainerService;
 
+
 	@GetMapping({"", "/"})
-	public String listTrainer() {
+	public String listPokemon(Model model) {
+		List<Trainer> trainerList = trainerService.getTrainerList();
+
+		model.addAttribute("trainerList", trainerList);
 		return "trainer/list.xhtml";
 	}
 

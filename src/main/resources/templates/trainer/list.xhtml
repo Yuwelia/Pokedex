@@ -21,5 +21,23 @@
 
 <h1>Trainer List</h1>
 
+<table>
+    <thead>
+    <tr>
+        <th>Nr.</th>
+        <th>Titel</th>
+        <th>Name</th>
+        <th>Region</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="trainer : ${trainerList}">
+        <td th:text="${trainer.id}" />
+        <td th:text="${trainer.title}" />
+        <td> <a th:href="@{/trainer/{id}(id=${trainer.id})}" th:text="${trainer.name}" /> </td>
+        <td th:text="${trainer.region}" />
+    </tr>
+    </tbody>
+</table>
 </body>
 </html>

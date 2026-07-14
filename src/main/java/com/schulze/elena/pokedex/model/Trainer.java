@@ -9,11 +9,14 @@ public class Trainer {
 	private String Region;
 	private List<String> pokemonList;
 
+	public Trainer() {
+	}
+
 	public Trainer(int id, String name, String title, String region) {
 		this.id = id;
 		this.name = name;
 		this.title = title;
-		Region = region;
+		this.Region = region;
 	}
 
 	public int getId() {

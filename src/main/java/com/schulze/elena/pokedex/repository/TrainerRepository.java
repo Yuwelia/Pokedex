@@ -2,7 +2,6 @@ package com.schulze.elena.pokedex.repository;
 
 import com.schulze.elena.pokedex.model.Trainer;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
@@ -16,7 +15,7 @@ public class TrainerRepository {
 	@Autowired
 	private JdbcTemplate jdbcTemplate;
 
-	public Trainer getTrainer(int pokemonId) {
+	public Trainer getTrainerByPokemonId(int pokemonId) {
 
 		return jdbcTemplate.queryForObject(
 			"SELECT " +
@@ -44,6 +43,22 @@ public class TrainerRepository {
 			,
 			new TrainerMapper()
 		);
+	}
+
+	public List<Trainer> listAll() {
+		return jdbcTemplate.query(
+			"SELECT " +
+			"trainer.id, " +
+			"trainer.name, " +
+			"trainer. title, "	+
+			"trainer.region " +
+			"FROM trainer",
+			new TrainerMapper()
+		);
+	}
+
+	public List<String> setPokemonListForTrainer(Trainer trainer) {
+		return null;
 	}
 
 	private class TrainerMapper implements RowMapper<Trainer> {
