@@ -1,7 +1,6 @@
 package com.schulze.elena.pokedex.service;
 
 import com.schulze.elena.pokedex.model.Pokemon;
-import com.schulze.elena.pokedex.model.Trainer;
 import com.schulze.elena.pokedex.repository.PokemonRepository;
 import com.schulze.elena.pokedex.repository.TrainerRepository;
 import com.schulze.elena.pokedex.repository.TypeRepository;
@@ -28,6 +27,10 @@ public class PokemonService {
 		setTrainer(pokemons);
 
 		return pokemons;
+	}
+
+	public void updatePokemon(Pokemon pokemon) {
+		pokemonRepository.update(pokemon);
 	}
 
 	private void setTypeAndReactions(List<Pokemon> pokemons) {
@@ -57,8 +60,8 @@ public class PokemonService {
 
 	private void setTrainer(List<Pokemon> pokemons) {
 		for (Pokemon pokemon : pokemons) {
-			pokemon.setTrainer(trainerRepository.getTrainer(pokemon.getId()));
-//			pokemon.getTrainer().setPokemonList(trainerRepository.getTrainerPokemonList());
+			pokemon.setTrainer(trainerRepository.getTrainerByPokemonId(pokemon.getId()));
+//			pokemon.getTrainerByPokemonId().setPokemonList(trainerRepository.getTrainerPokemonList());
 		}
 	}
 }

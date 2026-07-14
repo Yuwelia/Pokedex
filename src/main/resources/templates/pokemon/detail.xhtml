@@ -57,7 +57,7 @@
         </tr>
     </table>
     <button>Hinzufügen</button>
-    <button>Bearbeiten</button>
+    <button> <a th:href="@{/pokemon/{id}/update(id=${pokemon.id})}"> Bearbeiten </a> </button>
     <button>Löschen</button>
     </body>
 </html>

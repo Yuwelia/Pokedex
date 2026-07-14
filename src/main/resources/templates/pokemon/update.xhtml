@@ -1,0 +1,71 @@
+<html xmlns:th="http://www.thymeleaf.org" lang="de">
+<head>
+    <style>
+        body { font-family: 'Segoe UI', sans-serif; margin: 40px; background-color: #f5dce0; }
+        h1 { text-shadow: 2px 2px 0px #00008b, -2px -2px 0px #00008b; color: #fdda0d;}
+        table {
+            border-collapse: collapse;
+            width: 100%;
+        }
+        th, td {
+            background-color: #ffffff;
+            border: 1px solid black;
+            padding: 8px;
+            text-align: left;
+        }
+    </style>
+</head>
+<body>
+
+<h1>Update Pokemon</h1>
+
+<form th:action="@{/pokemon/{id}/update(id=${pokemon.id})}" th:method="put" th:object="${pokemon}">
+    <table border="1">
+        <tr>
+            <td width="300" height="300" align="center">
+                <img th:src="@{/pokemonImages/{id}.png(id=${pokemon.id})}" style="width:300px;height:300px;" />
+            </td>
+            <td>
+                <table style="width: 100%; height: 100%; border-collapse: collapse;">
+                    <tr>
+                        <td>Nr.</td>
+                        <td th:text="*{id}" />
+                        <input type="hidden" th:field="*{id}" />
+                    </tr>
+                    <tr>
+                        <td>Name</td>
+                        <td><input type="text" th:field="*{name}" style="width: 100%;"/> </td>
+                    </tr>
+                    <tr>
+                        <td>Typ</td>
+                        <td><input type="text" th:field="*{types}" style="width: 100%;"/> </td>
+                    </tr>
+                    <tr>
+                        <td>Stark gegen</td>
+                        <td th:text="*{strongAgainst}" />
+                        <input type="hidden" th:field="*{strongAgainst}"/>
+                    </tr>
+                    <tr>
+                        <td>Anfällig gegen</td>
+                        <td th:text="*{vulnerableTo}" />
+                        <input type="hidden" th:field="*{vulnerableTo}"/>
+                    </tr>
+                    <tr>
+                        <td>Trainer</td>
+                        <td>
+                            <select th:field="*{trainer.id}" style="width:100%;">
+                                <option th:each="trainer : ${trainerList}"
+                                        th:value="${trainer.id}"
+                                        th:text="${trainer.name}">
+                                </option>
+                            </select>
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+    </table>
+    <button type="submit">Speichern</button>
+</form>
+</body>
+</html>

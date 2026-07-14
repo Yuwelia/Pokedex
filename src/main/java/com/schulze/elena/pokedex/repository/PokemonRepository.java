@@ -16,6 +16,31 @@ public class PokemonRepository {
 	@Autowired
 	private JdbcTemplate jdbcTemplate;
 
+	public void update(Pokemon pokemon) {
+		jdbcTemplate.update(
+			"UPDATE pokemon " +
+				"SET name = '" + pokemon.getName() + "', " +
+				"trainer_fk = " + pokemon.getTrainer().getId() + " " +
+				"WHERE id = " + pokemon.getId());
+
+		jdbcTemplate.update(
+			"DELETE FROM pokemon_type " +
+				"WHERE pokemon_fk = " + pokemon.getId()
+		);
+
+		String[] types = pokemon.getTypes().split(",");
+
+		for (String type : types) {
+			type = type.trim();
+
+			jdbcTemplate.update(
+				"INSERT INTO pokemon_type (pokemon_fk, type_fk )" +
+				"VALUES (" + pokemon.getId() + ", (SELECT id FROM type WHERE name = '" + type + "'))"
+			);
+		}
+
+	}
+
 	public List<Pokemon> listAll() {
 
 		return jdbcTemplate.query(
