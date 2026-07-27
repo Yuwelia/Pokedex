@@ -24,7 +24,7 @@
     <table>
             <thead>
                 <tr>
-                    <th>Nr.</th>
+                    <th>Pokedex Nr..</th>
                     <th>Name</th>
                     <th>Typ</th>
                     <th>Stark gegen</th>
@@ -33,7 +33,7 @@
             </thead>
             <tbody>
                 <tr th:each="pokemon : ${pokemonList}">
-                    <td th:text="${pokemon.id}" />
+                    <td th:text="${pokemon.pokedexNumber}" />
                     <td> <a th:href="@{/pokemon/{id}(id=${pokemon.id})}" th:text="${pokemon.name}" /> </td>
                     <td th:text="${pokemon.types}" />
                     <td th:text="${pokemon.strongAgainst}" />
@@ -41,5 +41,6 @@
                 </tr>
             </tbody>
         </table>
+    <button> <a th:href="@{/pokemon/add}"> Hinzufügen </a> </button>
     </body>
 </html>

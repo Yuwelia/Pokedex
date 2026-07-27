@@ -24,13 +24,13 @@
     <table border="1">
         <tr>
             <td width="300" height="300" align="center">
-                <img th:src="@{/pokemonImages/{id}.png(id=${pokemon.id})}" style="width:300px;height:300px;" />
+                <img th:src="@{/pokemonImages/{pokedexNumber}.png(pokedexNumber=${pokemon.pokedexNumber})}" style="width:300px;height:300px;" />
             </td>
             <td>
                 <table style="width: 100%; height: 100%; border-collapse: collapse;">
                     <tr>
-                        <td>Nr.</td>
-                        <td th:text="${pokemon.id}" />
+                        <td>Pokedex Nr.</td>
+                        <td th:text="${pokemon.pokedexNumber}" />
                     </tr>
                     <tr>
                         <td>Name</td>

@@ -7,15 +7,15 @@ VALUES
     (5, 'Xenia', 'Wettbewerbssternchen', 'Hoenn'),
     (6, 'Troy', 'Champ', 'Hoenn');
 
-INSERT INTO pokemon (id, name, trainer_fk)
+INSERT INTO pokemon (id, pokedex_number, name, trainer_fk)
 VALUES
-    (778, 'Mimigma', 1),
-    (643, 'Reshiram', 2),
-    (700, 'Feelinara', 3),
-    (384, 'Rayquaza', 4),
-    (293, 'Flurmel', 4),
-    (334, 'Altaria', 5),
-    (376, 'Metagross', 6);
+    ((SELECT NEXTVAL('pokemon_seq')), 778, 'Mimigma', 1),
+    ((SELECT NEXTVAL('pokemon_seq')), 643, 'Reshiram', 2),
+    ((SELECT NEXTVAL('pokemon_seq')), 700, 'Feelinara', 3),
+    ((SELECT NEXTVAL('pokemon_seq')), 384, 'Rayquaza', 4),
+    ((SELECT NEXTVAL('pokemon_seq')), 293, 'Flurmel', 4),
+    ((SELECT NEXTVAL('pokemon_seq')), 334, 'Altaria', 5),
+    ((SELECT NEXTVAL('pokemon_seq')), 376, 'Metagross', 6);
 --     (1, 'Bisasam', NULL);
 
 INSERT INTO pokemon_type (pokemon_fk, type_fk)

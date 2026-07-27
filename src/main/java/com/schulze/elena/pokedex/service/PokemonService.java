@@ -33,6 +33,10 @@ public class PokemonService {
 		pokemonRepository.update(pokemon);
 	}
 
+	public int addPokemon(Pokemon pokemon) {
+		return pokemonRepository.add(pokemon);
+	}
+
 	private void setTypeAndReactions(List<Pokemon> pokemons) {
 		String typ1;
 		String typ2;

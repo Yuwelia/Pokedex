@@ -3,23 +3,30 @@ package com.schulze.elena.pokedex.model;
 public class Pokemon {
 
 	private int id;
+	private int pokedexNumber;
 	private String name;
 	private String types;
 	private String strongAgainst;
 	private String vulnerableTo;
 	private Trainer trainer;
 
-	public Pokemon(int id, String name, String types) {
+	public Pokemon(int id,int pokedexNumber, String name, String types) {
 		this.id = id;
+		this.pokedexNumber = pokedexNumber;
 		this.name = name;
 		this.types = types;
 	}
 
+	public Pokemon() {}
+
 	public int getId() {
 		return id;
 	}
-	public void setId(int id) {
-		this.id = id;
+	public int getPokedexNumber() {
+		return pokedexNumber;
+	}
+	public void setPokedexNumber(int pokedexNumber) {
+		this.pokedexNumber = pokedexNumber;
 	}
 	public String getName() {
 		return name;

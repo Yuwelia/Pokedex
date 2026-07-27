@@ -38,7 +38,31 @@ public class PokemonRepository {
 				"VALUES (" + pokemon.getId() + ", (SELECT id FROM type WHERE name = '" + type + "'))"
 			);
 		}
+	}
 
+	public int add(Pokemon pokemon) {
+
+		int id = jdbcTemplate.queryForObject("SELECT NEXTVAL('pokemon_seq')", Integer.class);
+		// TODO get new ID from sequence
+		// TODO use ID in SQL
+		// TODO return ID
+
+		jdbcTemplate.update(
+			"INSERT INTO pokemon(id, pokedex_number, name, trainer_fk) " +
+				"VALUES ( " + id + ", " + pokemon.getPokedexNumber() + ", '"  + pokemon.getName() + "', " + pokemon.getTrainer().getId() + ")"
+		);
+
+		String[] types = pokemon.getTypes().split(",");
+
+		for (String type : types) {
+			type = type.trim();
+
+			jdbcTemplate.update(
+				"INSERT INTO pokemon_type (pokemon_fk, type_fk )" +
+					"VALUES (" + pokemon.getPokedexNumber() + ", (SELECT id FROM type WHERE name = '" + type + "'))"
+			);
+		}
+		return id;
 	}
 
 	public List<Pokemon> listAll() {
@@ -46,11 +70,12 @@ public class PokemonRepository {
 		return jdbcTemplate.query(
 			"SELECT " +
 				"pokemon.id, " +
+				"pokemon.pokedex_number, " +
 				"pokemon.name, " +
 				"GROUP_CONCAT(type.name SEPARATOR ', ') AS types " +
 				"FROM pokemon " +
 				"LEFT JOIN pokemon_type " +
-				"ON pokemon.id = pokemon_type.pokemon_fk " +
+				"ON pokemon.pokedex_number = pokemon_type.pokemon_fk " +
 				"LEFT JOIN type " +
 				"ON pokemon_type.type_fk = type.id " +
 				"GROUP BY pokemon.id " +
@@ -64,6 +89,7 @@ public class PokemonRepository {
 		public Pokemon mapRow(ResultSet resultSet, int rowNum) throws SQLException {
 			return new Pokemon(
 				resultSet.getInt("id"),
+				resultSet.getInt("pokedex_number"),
 				resultSet.getString("name"),
 				resultSet.getString("types")
 			);

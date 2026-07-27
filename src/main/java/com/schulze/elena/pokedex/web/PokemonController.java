@@ -61,4 +61,17 @@ public class PokemonController {
 		return "redirect:/pokemon/" + id;
 	}
 
+	@GetMapping("/add")
+	public String addPokemon(Model model) {
+		model.addAttribute("pokemon", new Pokemon());
+		model.addAttribute("trainerList", trainerService.getTrainerList());
+
+		return "pokemon/add.xhtml";
+	}
+
+	@PostMapping("/add")
+	public String addPokemon(@ModelAttribute("pokemon") Pokemon pokemon) {
+		int id = pokemonService.addPokemon(pokemon);
+		return "redirect:/pokemon/" + id;
+	}
 }
