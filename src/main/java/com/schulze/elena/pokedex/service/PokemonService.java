@@ -37,6 +37,10 @@ public class PokemonService {
 		return pokemonRepository.add(pokemon);
 	}
 
+	public void deletePokemon(int id) {
+		pokemonRepository.deletePokemon(id);
+	}
+
 	private void setTypeAndReactions(List<Pokemon> pokemons) {
 		String typ1;
 		String typ2;

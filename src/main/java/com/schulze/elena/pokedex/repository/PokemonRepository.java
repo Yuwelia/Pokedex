@@ -43,10 +43,6 @@ public class PokemonRepository {
 	public int add(Pokemon pokemon) {
 
 		int id = jdbcTemplate.queryForObject("SELECT NEXTVAL('pokemon_seq')", Integer.class);
-		// TODO get new ID from sequence
-		// TODO use ID in SQL
-		// TODO return ID
-
 		jdbcTemplate.update(
 			"INSERT INTO pokemon(id, pokedex_number, name, trainer_fk) " +
 				"VALUES ( " + id + ", " + pokemon.getPokedexNumber() + ", '"  + pokemon.getName() + "', " + pokemon.getTrainer().getId() + ")"
@@ -82,6 +78,10 @@ public class PokemonRepository {
 				"ORDER BY pokemon.id;",
 			new PokemonMapper()
 		);
+	}
+
+	public void deletePokemon(int id) {
+		jdbcTemplate.update("DELETE FROM pokemon WHERE id = " + id);
 	}
 
 	private class PokemonMapper implements RowMapper<Pokemon> {

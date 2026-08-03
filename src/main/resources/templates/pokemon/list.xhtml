@@ -29,6 +29,7 @@
                     <th>Typ</th>
                     <th>Stark gegen</th>
                     <th>Anfällig gegen</th>
+                    <th></th>
                 </tr>
             </thead>
             <tbody>
@@ -38,6 +39,7 @@
                     <td th:text="${pokemon.types}" />
                     <td th:text="${pokemon.strongAgainst}" />
                     <td th:text="${pokemon.vulnerableTo}" />
+                    <td> <a th:href="@{/pokemon/{id}/delete(id=${pokemon.id})}" th:text="D" /> </td>
                 </tr>
             </tbody>
         </table>

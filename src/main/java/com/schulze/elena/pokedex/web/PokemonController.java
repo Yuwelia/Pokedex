@@ -74,4 +74,10 @@ public class PokemonController {
 		int id = pokemonService.addPokemon(pokemon);
 		return "redirect:/pokemon/" + id;
 	}
+
+	@GetMapping("/{id}/delete")
+	public String deletePokemon(@PathVariable int id, Model model) {
+		pokemonService.deletePokemon(id);
+		return "redirect:/pokemon/";
+	}
 }
