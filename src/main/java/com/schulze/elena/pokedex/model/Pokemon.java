@@ -1,5 +1,10 @@
 package com.schulze.elena.pokedex.model;
 
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
+import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.apache.commons.lang3.builder.ToStringStyle;
+
 public class Pokemon {
 
 	private int id;
@@ -21,6 +26,9 @@ public class Pokemon {
 
 	public int getId() {
 		return id;
+	}
+	public void setId(int id) {
+		this.id = id;
 	}
 	public int getPokedexNumber() {
 		return pokedexNumber;
@@ -61,6 +69,16 @@ public class Pokemon {
 
 	@Override
 	public String toString() {
-		return name;
+		return ToStringBuilder.reflectionToString(this, ToStringStyle.MULTI_LINE_STYLE);
+	}
+
+	@Override
+	public boolean equals(Object object) {
+		return EqualsBuilder.reflectionEquals(this, object);
+	}
+
+	@Override
+	public int hashCode() {
+		return HashCodeBuilder.reflectionHashCode(this);
 	}
 }

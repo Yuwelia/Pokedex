@@ -35,21 +35,24 @@ class PokemonRepositoryTest {
 		Trainer trainer = new Trainer();
 		trainer.setId(2);
 
-		Pokemon pokemon = new Pokemon();
-		pokemon.setName("Felilou");
-		pokemon.setPokedexNumber(509);
-		pokemon.setTypes("Unlicht");
-		pokemon.setTrainer(trainer);
+		Pokemon newPokemon = new Pokemon();
+		newPokemon.setName("Felilou");
+		newPokemon.setPokedexNumber(509);
+		newPokemon.setTypes("Unlicht");
+		newPokemon.setTrainer(trainer);
 
-		pokemonRepository.add(pokemon);
+		int id = pokemonRepository.add(newPokemon);
 
 		List<Pokemon> pokemons = pokemonService.getPokemons();
 
 		Pokemon foundPokemon = pokemons.get(pokemons.size() - 1);
+
+		assertThat(foundPokemon.getId()).isEqualTo(id);
 		assertThat(foundPokemon.getName()).isEqualTo("Felilou");
 		assertThat(foundPokemon.getPokedexNumber()).isEqualTo(509);
 		assertThat(foundPokemon.getTypes()).isEqualTo("Unlicht");
-		assertThat(foundPokemon.getTrainer().getId()).isEqualTo(2);
-		assertThat(foundPokemon.getId()).isEqualTo(8);
+		assertThat(foundPokemon.getTrainer().getId()).isEqualTo(trainer.getId());
+		assertThat(foundPokemon.getStrongAgainst()).isEqualTo("Geist, Psycho");
+		assertThat(foundPokemon.getVulnerableTo()).isEqualTo("Fee, Kampf, Käfer");
 	}
 }
