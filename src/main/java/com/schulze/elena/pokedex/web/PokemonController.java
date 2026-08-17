@@ -4,9 +4,11 @@ import com.schulze.elena.pokedex.model.Pokemon;
 import com.schulze.elena.pokedex.service.PokemonService;
 import com.schulze.elena.pokedex.service.TrainerService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
@@ -32,10 +34,16 @@ public class PokemonController {
 	public String getPokemon(@PathVariable int id, Model model) {
 		List<Pokemon> pokemonList = pokemonService.getPokemons();
 
+		Pokemon selectedPokemon = null;
 		for (Pokemon pokemon : pokemonList) {
 			if (pokemon.getId() == id) {
+				selectedPokemon = pokemon;
 				model.addAttribute("pokemon", pokemon);
 			}
+		}
+
+		if (selectedPokemon == null) {
+			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Pokemon not found");
 		}
 
 		return "pokemon/detail.xhtml";
@@ -45,12 +53,18 @@ public class PokemonController {
 	public String updatePokemon(@PathVariable int id, Model model) {
 		List<Pokemon> pokemonList = pokemonService.getPokemons();
 
+		Pokemon selectedPokemon = null;
 		for (Pokemon pokemon : pokemonList) {
 			if (pokemon.getId() == id) {
+				selectedPokemon = pokemon;
 				model.addAttribute("pokemon", pokemon);
 			}
 		}
 		model.addAttribute("trainerList", trainerService.getTrainerList());
+
+		if (selectedPokemon == null) {
+			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Pokemon not found");
+		}
 
 		return "pokemon/update.xhtml";
 	}

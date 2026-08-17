@@ -20,7 +20,8 @@ public class PokemonRepository {
 		jdbcTemplate.update(
 			"UPDATE pokemon " +
 				"SET name = '" + pokemon.getName() + "', " +
-				"trainer_fk = " + pokemon.getTrainer().getId() + " " +
+				"trainer_fk = " + pokemon.getTrainer().getId() + ", " +
+				"pokedex_number = '" + pokemon.getPokedexNumber() + "' " +
 				"WHERE id = " + pokemon.getId());
 
 		jdbcTemplate.update(
@@ -71,11 +72,29 @@ public class PokemonRepository {
 				"GROUP_CONCAT(type.name SEPARATOR ', ') AS types " +
 				"FROM pokemon " +
 				"LEFT JOIN pokemon_type " +
-				"ON pokemon.pokedex_number = pokemon_type.pokemon_fk " +
+				"ON pokemon.id = pokemon_type.pokemon_fk " +
 				"LEFT JOIN type " +
 				"ON pokemon_type.type_fk = type.id " +
 				"GROUP BY pokemon.id " +
 				"ORDER BY pokemon.id;",
+			new PokemonListMapper()
+		);
+	}
+
+	public Pokemon getPokemonById(int id) {
+		return jdbcTemplate.queryForObject(
+			"SELECT " +
+				"pokemon.id, " +
+				"pokemon.pokedex_number, " +
+				"GROUP_CONCAT(type.name SEPARATOR ', ') AS types, " +
+				"pokemon.name " +
+				"FROM pokemon " +
+				"LEFT JOIN pokemon_type " +
+				"ON pokemon.id = pokemon_type.pokemon_fk " +
+				"LEFT JOIN type " +
+				"ON pokemon_type.type_fk = type.id " +
+				"WHERE pokemon.id = " + id +
+				"GROUP BY pokemon.id",
 			new PokemonMapper()
 		);
 	}
@@ -85,6 +104,16 @@ public class PokemonRepository {
 	}
 
 	private class PokemonMapper implements RowMapper<Pokemon> {
+		public Pokemon mapRow(ResultSet resultSet, int rowNum) throws SQLException {
+			return new Pokemon(
+				resultSet.getInt("id"),
+				resultSet.getInt("pokedex_number"),
+				resultSet.getString("name"),
+				resultSet.getString("types")
+			);
+		}
+	}
+	private class PokemonListMapper implements RowMapper<Pokemon> {
 
 		public Pokemon mapRow(ResultSet resultSet, int rowNum) throws SQLException {
 			return new Pokemon(

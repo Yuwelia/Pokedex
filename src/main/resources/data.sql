@@ -16,32 +16,8 @@ VALUES
     ((SELECT NEXTVAL('pokemon_seq')), 293, 'Flurmel', 4),
     ((SELECT NEXTVAL('pokemon_seq')), 334, 'Altaria', 5),
     ((SELECT NEXTVAL('pokemon_seq')), 376, 'Metagross', 6);
---     (1, 'Bisasam', NULL);
 
-INSERT INTO pokemon_type (pokemon_fk, type_fk)
-VALUES
-    (778, 9),
-    (778, 11),
-
-    (643, 1),
-    (643, 12),
-
-    (700, 11),
-
-    (384, 12),
-    (384, 13),
-
-    (293, 14),
-
-    (334, 12),
-    (334, 13),
-
-    (376, 7),
-    (376, 17),
-
-    (1, 4),
-    (1, 16);
-
+-- TODO use sequence, eventually
 INSERT INTO type (id, name)
 VALUES
     (1, 'Feuer'),
@@ -62,6 +38,29 @@ VALUES
     (16, 'Gift'),
     (17, 'Psycho'),
     (18, 'Eis');
+
+INSERT INTO pokemon_type (pokemon_fk, type_fk)
+VALUES
+    (SELECT id FROM pokemon WHERE pokedex_number = 778, 9),
+    (SELECT id FROM pokemon WHERE pokedex_number = 778, 11),
+
+    (SELECT id FROM pokemon WHERE pokedex_number = 643, 1),
+    (SELECT id FROM pokemon WHERE pokedex_number = 643, 12),
+
+    (SELECT id FROM pokemon WHERE pokedex_number = 700, 11),
+
+    (SELECT id FROM pokemon WHERE pokedex_number = 384, 12),
+    (SELECT id FROM pokemon WHERE pokedex_number = 384, 13),
+
+    (SELECT id FROM pokemon WHERE pokedex_number = 293, 14),
+
+    (SELECT id FROM pokemon WHERE pokedex_number = 334, 12),
+    (SELECT id FROM pokemon WHERE pokedex_number = 334, 13),
+
+    (SELECT id FROM pokemon WHERE pokedex_number = 376, 7),
+    (SELECT id FROM pokemon WHERE pokedex_number = 376, 17);
+
+
 
 INSERT INTO strong_against (type_fk, strong_against_fk)
 VALUES
