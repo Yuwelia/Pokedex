@@ -4,13 +4,16 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import com.schulze.elena.pokedex.model.Pokemon;
 import com.schulze.elena.pokedex.repository.PokemonRepository;
+import com.schulze.elena.pokedex.service.PokemonService;
 import org.assertj.core.api.Assertions;
 import org.assertj.core.api.InstanceOfAssertFactories;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.HttpStatus;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.web.servlet.assertj.MockMvcTester;
 import org.springframework.test.web.servlet.assertj.MvcTestResult;
 import org.springframework.transaction.annotation.Transactional;
@@ -26,9 +29,13 @@ class PokemonControllerTest {
 	private MockMvcTester mockMvcTester; // Automatischer AssertJ-Wrapper für MockMvc
 	@Autowired
 	private PokemonRepository pokemonRepository;
+	@Autowired
+	PokemonService pokemonService;
+	@Autowired
+	private JdbcTemplate jdbcTemplate;
 
 	@Test
-	void listPokemon_ShouldMapUrlAndPopulateModel() {
+	void listPokemon_test() {
 		MvcTestResult result = mockMvcTester.get().uri("/pokemon").exchange();
 
 		assertThat(result).as("GET result")
@@ -43,7 +50,7 @@ class PokemonControllerTest {
 	}
 
 	@Test
-	void getPokemon_ShouldMapUrlAndPopulateModel() {
+	void getPokemon_test() {
 		MvcTestResult result = mockMvcTester.get().uri("/pokemon/1").exchange();
 
 		assertThat(result).as("GET result")
@@ -57,7 +64,7 @@ class PokemonControllerTest {
 		;
 	}
 	@Test
-	void getPokemonFailed_ShouldMapUrlAndPopulateModel() {
+	void getPokemonFailed_test() {
 		MvcTestResult result = mockMvcTester.get().uri("/pokemon/123456789").exchange();
 
 		assertThat(result).as("GET result")
@@ -66,7 +73,7 @@ class PokemonControllerTest {
 	}
 
 	@Test
-	void updateGetPokemon_ShouldMapUrlAndPopulateModel() {
+	void updatePokemon_get_test() {
 		MvcTestResult result = mockMvcTester.get().uri("/pokemon/1/update").exchange();
 
 		assertThat(result).as("GET result")
@@ -76,7 +83,7 @@ class PokemonControllerTest {
 	}
 
 	@Test
-	void updateGetPokemonFailed_ShouldMapUrlAndPopulateModel() {
+	void updatePokemonFailed_get_test() {
 		MvcTestResult result = mockMvcTester.get().uri("/pokemon/123456789/update").exchange();
 
 		assertThat(result).as("GET result")
@@ -85,7 +92,7 @@ class PokemonControllerTest {
 	}
 
 	@Test
-	void updatePutPokemon_ShouldMapUrlAndPopulateModel() {
+	void updatePokemon_put_test() {
 		int id = 1;
 		MvcTestResult result = mockMvcTester.put().uri("/pokemon/" + id + "/update")
 			.formField("pokedexNumber", "567")
@@ -96,12 +103,80 @@ class PokemonControllerTest {
 
 		Pokemon updatedPokemon = pokemonRepository.getPokemonById(id);
 
-		Assertions.assertThat(updatedPokemon.getName()).isEqualTo("newName");
-		Assertions.assertThat(updatedPokemon.getTypes()).isEqualTo("Feuer");
-		Assertions.assertThat(updatedPokemon.getPokedexNumber()).isEqualTo(567);
+		assertThat(updatedPokemon.getName()).isEqualTo("newName");
+		assertThat(updatedPokemon.getTypes()).isEqualTo("Feuer");
+		assertThat(updatedPokemon.getPokedexNumber()).isEqualTo(567);
 
 		assertThat(result).as("GET result")
 			.hasStatus3xxRedirection()
+		;
+	}
+
+	@Test
+	void deletePokemon_get_test() {
+		int beforeDelete = pokemonService.getPokemons().size();
+		MvcTestResult result = mockMvcTester.get().uri("/pokemon/1/delete").exchange();
+		int afterDelete = pokemonService.getPokemons().size();
+
+		assertThat(beforeDelete - afterDelete).isEqualTo(1);
+		assertThatPokemonIsDeleted(1);
+
+		assertThat(result).as("GET result")
+			.hasStatus3xxRedirection()
+			.hasViewName("redirect:/pokemon/")
+		;
+	}
+
+	private void assertThatPokemonIsDeleted(int id) {
+
+		int foundObjects = jdbcTemplate.queryForObject(
+			"SELECT COUNT(*) FROM pokemon WHERE id = " + id,
+			Integer.class
+		);
+		assertThat(foundObjects).isZero();
+	}
+
+
+	@Test
+	void deletePokemonFailed_test() {
+		int beforeDelete = pokemonService.getPokemons().size();
+		MvcTestResult result = mockMvcTester.get().uri("/pokemon/123456789/delete").exchange();
+		int afterDelete = pokemonService.getPokemons().size();
+
+		assertThat(afterDelete).isEqualTo(beforeDelete);
+		assertThatPokemonIsDeleted(123456789);
+		assertThat(result).as("GET result")
+			.hasStatus3xxRedirection()
+			.hasViewName("redirect:/pokemon/")
+		;
+	}
+
+	@Test
+	void createPokemon_post_test() {
+		MvcTestResult result = mockMvcTester.post().uri("/pokemon/add")
+			.formField("pokedexNumber", "509")
+			.formField("name", "Felilou")
+			.formField("types", "Unlicht")
+			.formField("trainer.id", "2")
+			.exchange();
+
+		assertThat(result).as("GET result")
+			.hasStatus3xxRedirection()
+			.hasViewName("redirect:/pokemon/8")
+		;
+	}
+
+	@Test
+	void createPokemonFailed_post_test() {
+		MvcTestResult result = mockMvcTester.post().uri("/pokemon/add")
+			.formField("pokedexNumber", "abc")
+			.formField("name", "Felilou")
+			.formField("types", "abc")
+			.formField("trainer.id", "123456789")
+			.exchange();
+
+		assertThat(result).as("GET result")
+			.hasStatus4xxClientError()
 		;
 	}
 }

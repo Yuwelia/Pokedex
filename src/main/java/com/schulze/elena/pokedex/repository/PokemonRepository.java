@@ -42,8 +42,8 @@ public class PokemonRepository {
 	}
 
 	public int add(Pokemon pokemon) {
-
 		int id = jdbcTemplate.queryForObject("SELECT NEXTVAL('pokemon_seq')", Integer.class);
+
 		jdbcTemplate.update(
 			"INSERT INTO pokemon(id, pokedex_number, name, trainer_fk) " +
 				"VALUES ( " + id + ", " + pokemon.getPokedexNumber() + ", '"  + pokemon.getName() + "', " + pokemon.getTrainer().getId() + ")"
@@ -56,9 +56,10 @@ public class PokemonRepository {
 
 			jdbcTemplate.update(
 				"INSERT INTO pokemon_type (pokemon_fk, type_fk )" +
-					"VALUES (" + pokemon.getPokedexNumber() + ", (SELECT id FROM type WHERE name = '" + type + "'))"
+					"VALUES (" + id + ", (SELECT id FROM type WHERE name = '" + type + "'))"
 			);
 		}
+
 		return id;
 	}
 
@@ -100,6 +101,7 @@ public class PokemonRepository {
 	}
 
 	public void deletePokemon(int id) {
+		jdbcTemplate.update("DELETE FROM pokemon_type WHERE pokemon_fk = " + id);
 		jdbcTemplate.update("DELETE FROM pokemon WHERE id = " + id);
 	}
 
