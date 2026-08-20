@@ -16,7 +16,7 @@ public class TypeRepository {
 	@Autowired
 	private JdbcTemplate jdbcTemplate;
 
-	public List<String> getStrongAgainstTypes(String typeName1, String typeName2) {
+	public List<String> getStrongAgainstTypes(List<String> types) {
 
 		return jdbcTemplate.query(
 			"SELECT " +
@@ -27,12 +27,12 @@ public class TypeRepository {
 				"WHERE strong_against.type_fk IN( " +
 				"SELECT id " +
 				"FROM type " +
-				"WHERE name IN('" + typeName1 + "', '" + typeName2 + "')); ",
+				"WHERE name IN('" + types + "')); ",
 			new TypeMapper()
 		);
 	}
 
-	public List<String> getVulnerableToTypes(String typeName1, String typeName2) {
+	public List<String> getVulnerableToTypes(List<String> types) {
 
 		return jdbcTemplate.query(
 			"SELECT " +
@@ -43,7 +43,7 @@ public class TypeRepository {
 				"WHERE vulnerable_to.type_fk IN( " +
 				"SELECT id " +
 				"FROM type " +
-				"WHERE name IN('" + typeName1 + "', '" + typeName2 + "')); ",
+				"WHERE name IN('" + types + "')); ",
 			new TypeMapper()
 		);
 	}

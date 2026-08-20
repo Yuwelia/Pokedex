@@ -7,6 +7,7 @@ import com.schulze.elena.pokedex.repository.TypeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -20,14 +21,19 @@ public class PokemonService {
 	private TrainerRepository trainerRepository;
 
 
-	public List<Pokemon> getPokemons() {
+	public List<Pokemon> listPokemons() {
 		List<Pokemon> pokemons = pokemonRepository.listAll();
 
 		setTypeAndReactions(pokemons);
+
+		// TODO Trainer gleich im PokemonRepository erzeugen
 		setTrainer(pokemons);
 
 		return pokemons;
 	}
+
+
+	// TODO getPokemonById implementieren und verwenden
 
 	public void updatePokemon(Pokemon pokemon) {
 		pokemonRepository.update(pokemon);
@@ -42,25 +48,28 @@ public class PokemonService {
 	}
 
 	private void setTypeAndReactions(List<Pokemon> pokemons) {
-		String typ1;
-		String typ2;
 		for (Pokemon pokemon : pokemons) {
-			String[] types = pokemon.getTypes()
+
+			// TODO Schönere typen machen
+			List<String> types = Arrays.stream(pokemon.getTypes()
 				.replaceAll("[\\[\\]]", "")
-				.split(",");
+				.split(","))
+				.toList()
+				;
 
-			typ1 = types[0].trim();
-			if (types.length > 1) {
-				typ2 = types[1].trim();
-			} else {
-				typ2 = null;
-			}
+//			String typ1 = types[0].trim();
+//			String typ2;
+//			if (types.length > 1) {
+//				typ2 = types[1].trim();
+//			} else {
+//				typ2 = null;
+//			}
 
-			List<String> strongAgainstList = typeRepository.getStrongAgainstTypes(typ1, typ2);
+			List<String> strongAgainstList = typeRepository.getStrongAgainstTypes(types);
 			String strongAgainst = strongAgainstList.stream().collect(Collectors.joining(", "));
 			pokemon.setStrongAgainst(strongAgainst);
 
-			List<String> vulnerableToList = typeRepository.getVulnerableToTypes(typ1, typ2);
+			List<String> vulnerableToList = typeRepository.getVulnerableToTypes(types);
 			String vulnerableTo = vulnerableToList.stream().collect(Collectors.joining(", "));
 			pokemon.setVulnerableTo(vulnerableTo);
 		}

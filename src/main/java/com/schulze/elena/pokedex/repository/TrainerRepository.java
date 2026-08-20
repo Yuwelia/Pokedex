@@ -57,7 +57,7 @@ public class TrainerRepository {
 		);
 	}
 
-	public List<String> setPokemonListForTrainer(Trainer trainer) {
+	public List<String> getPokemonListForTrainer(Trainer trainer) {
 		return null;
 	}
 

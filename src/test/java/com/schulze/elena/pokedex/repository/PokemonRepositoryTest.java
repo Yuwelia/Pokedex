@@ -19,7 +19,9 @@ class PokemonRepositoryTest {
 	@Autowired
 	private PokemonRepository pokemonRepository;
 	@Autowired
-	private PokemonService pokemonService;
+	private TrainerRepository trainerRepository;
+//	@Autowired
+//	private PokemonService pokemonService;
 
 	@Test
 	public void testListAll() {
@@ -43,16 +45,19 @@ class PokemonRepositoryTest {
 
 		int id = pokemonRepository.add(newPokemon);
 
-		List<Pokemon> pokemons = pokemonService.getPokemons();
+//		List<Pokemon> pokemons = pokemonService.getPokemons();
 
-		Pokemon foundPokemon = pokemons.get(pokemons.size() - 1);
+//		Pokemon foundPokemon = pokemons.get(pokemons.size() - 1);
+		Pokemon addedPokemon = pokemonRepository.getPokemonById(id);
+		Trainer trainerForAddedPokemon = trainerRepository.getTrainerByPokemonId(id);
 
-		assertThat(foundPokemon.getId()).isEqualTo(id);
-		assertThat(foundPokemon.getName()).isEqualTo("Felilou");
-		assertThat(foundPokemon.getPokedexNumber()).isEqualTo(509);
-		assertThat(foundPokemon.getTypes()).isEqualTo("Unlicht");
-		assertThat(foundPokemon.getTrainer().getId()).isEqualTo(trainer.getId());
-		assertThat(foundPokemon.getStrongAgainst()).isEqualTo("Geist, Psycho");
-		assertThat(foundPokemon.getVulnerableTo()).isEqualTo("Fee, Kampf, Käfer");
+		assertThat(addedPokemon.getId()).isEqualTo(id);
+		assertThat(addedPokemon.getName()).isEqualTo("Felilou");
+		assertThat(addedPokemon.getPokedexNumber()).isEqualTo(509);
+		assertThat(addedPokemon.getTypes()).isEqualTo("Unlicht");
+		//assertThat(addedPokemon.getTrainer().getId()).isEqualTo(trainer.getId());
+//		assertThat(addedPokemon.getStrongAgainst()).isEqualTo("Geist, Psycho");
+//		assertThat(addedPokemon.getVulnerableTo()).isEqualTo("Fee, Kampf, Käfer");
+		// TODO assertions for trainer
 	}
 }

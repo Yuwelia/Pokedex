@@ -1,6 +1,5 @@
 package com.schulze.elena.pokedex.service;
 
-import com.schulze.elena.pokedex.model.Pokemon;
 import com.schulze.elena.pokedex.model.Trainer;
 import com.schulze.elena.pokedex.repository.TrainerRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,7 +29,7 @@ public class TrainerService {
 
 	private void setPokemonList(List<Trainer> trainerList) {
 		for (Trainer trainer : trainerList) {
-			trainerRepository.setPokemonListForTrainer(trainer);
+			trainerRepository.getPokemonListForTrainer(trainer);
 		}
 	}
 }

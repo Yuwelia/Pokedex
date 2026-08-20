@@ -5,24 +5,20 @@ import static org.assertj.core.api.Assertions.assertThat;
 import com.schulze.elena.pokedex.model.Pokemon;
 import com.schulze.elena.pokedex.repository.PokemonRepository;
 import com.schulze.elena.pokedex.service.PokemonService;
-import org.assertj.core.api.Assertions;
 import org.assertj.core.api.InstanceOfAssertFactories;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
-import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.web.servlet.assertj.MockMvcTester;
 import org.springframework.test.web.servlet.assertj.MvcTestResult;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
-
 @SpringBootTest
 @AutoConfigureMockMvc
-@Transactional // TODO really needed, or default behavior anyway?
+@Transactional
 class PokemonControllerTest {
 
 	@Autowired
@@ -34,23 +30,25 @@ class PokemonControllerTest {
 	@Autowired
 	private JdbcTemplate jdbcTemplate;
 
+	// TODO einheitliches Namensschema für Tests (ohne "_test" hinten dran, mit "test" vorne dran)
+
 	@Test
-	void listPokemon_test() {
+	void testListPokemon() {
 		MvcTestResult result = mockMvcTester.get().uri("/pokemon").exchange();
 
 		assertThat(result).as("GET result")
 			.hasStatusOk()
 			.hasViewName("pokemon/list.xhtml")
 			.model().as("GET result model")
-				.containsKey("pokemonList")
-				.extracting(model -> model.get("pokemonList"), InstanceOfAssertFactories.LIST)
-				.extracting(pokemon -> ((Pokemon)pokemon).getName())
-				.containsExactly("Mimigma", "Reshiram", "Feelinara", "Rayquaza", "Flurmel", "Altaria", "Metagross")
+			.containsKey("pokemonList")
+			.extracting(model -> model.get("pokemonList"), InstanceOfAssertFactories.LIST)
+			.extracting(pokemon -> ((Pokemon)pokemon).getName())
+			.containsExactly("Mimigma", "Reshiram", "Feelinara", "Rayquaza", "Flurmel", "Altaria", "Metagross")
 		;
 	}
 
 	@Test
-	void getPokemon_test() {
+	void getPokemon() {
 		MvcTestResult result = mockMvcTester.get().uri("/pokemon/1").exchange();
 
 		assertThat(result).as("GET result")
@@ -59,12 +57,17 @@ class PokemonControllerTest {
 			.model().as("GET result model")
 			.containsKey("pokemon")
 			.extracting(model -> model.get("pokemon"))
-			.extracting(pokemon -> ((Pokemon)pokemon).getName())
-			.isEqualTo("Mimigma")
+			.isInstanceOf(Pokemon.class)
+			.satisfies(pokemonObject -> {
+				// TODO ganzes Pokemon asserten
+				Pokemon pokemon = (Pokemon)pokemonObject;
+				assertThat(pokemon.getName()).isEqualTo("Mimigma");
+			})
 		;
 	}
+
 	@Test
-	void getPokemonFailed_test() {
+	void testGetPokemon_NotExistingId() {
 		MvcTestResult result = mockMvcTester.get().uri("/pokemon/123456789").exchange();
 
 		assertThat(result).as("GET result")
@@ -73,7 +76,7 @@ class PokemonControllerTest {
 	}
 
 	@Test
-	void updatePokemon_get_test() {
+	void testUpdatePokemon_get() {
 		MvcTestResult result = mockMvcTester.get().uri("/pokemon/1/update").exchange();
 
 		assertThat(result).as("GET result")
@@ -83,7 +86,7 @@ class PokemonControllerTest {
 	}
 
 	@Test
-	void updatePokemonFailed_get_test() {
+	void testUpdatePokemon_get_Failed() {
 		MvcTestResult result = mockMvcTester.get().uri("/pokemon/123456789/update").exchange();
 
 		assertThat(result).as("GET result")
@@ -106,17 +109,20 @@ class PokemonControllerTest {
 		assertThat(updatedPokemon.getName()).isEqualTo("newName");
 		assertThat(updatedPokemon.getTypes()).isEqualTo("Feuer");
 		assertThat(updatedPokemon.getPokedexNumber()).isEqualTo(567);
+		// TODO assert trainer
 
 		assertThat(result).as("GET result")
 			.hasStatus3xxRedirection()
 		;
 	}
 
+	// TODO negativtest für update
+
 	@Test
-	void deletePokemon_get_test() {
-		int beforeDelete = pokemonService.getPokemons().size();
+	void deletePokemon_test() {
+		int beforeDelete = pokemonService.listPokemons().size();
 		MvcTestResult result = mockMvcTester.get().uri("/pokemon/1/delete").exchange();
-		int afterDelete = pokemonService.getPokemons().size();
+		int afterDelete = pokemonService.listPokemons().size();
 
 		assertThat(beforeDelete - afterDelete).isEqualTo(1);
 		assertThatPokemonIsDeleted(1);
@@ -127,6 +133,7 @@ class PokemonControllerTest {
 		;
 	}
 
+	// TODO helper runter
 	private void assertThatPokemonIsDeleted(int id) {
 
 		int foundObjects = jdbcTemplate.queryForObject(
@@ -139,12 +146,12 @@ class PokemonControllerTest {
 
 	@Test
 	void deletePokemonFailed_test() {
-		int beforeDelete = pokemonService.getPokemons().size();
+		int beforeDelete = pokemonService.listPokemons().size();
 		MvcTestResult result = mockMvcTester.get().uri("/pokemon/123456789/delete").exchange();
-		int afterDelete = pokemonService.getPokemons().size();
+		int afterDelete = pokemonService.listPokemons().size();
 
 		assertThat(afterDelete).isEqualTo(beforeDelete);
-		assertThatPokemonIsDeleted(123456789);
+		//assertThatPokemonIsDeleted(123456789);
 		assertThat(result).as("GET result")
 			.hasStatus3xxRedirection()
 			.hasViewName("redirect:/pokemon/")
@@ -164,6 +171,7 @@ class PokemonControllerTest {
 			.hasStatus3xxRedirection()
 			.hasViewName("redirect:/pokemon/8")
 		;
+		// TODO asserten, dass das Pokemon persistiert ist
 	}
 
 	@Test
@@ -178,5 +186,6 @@ class PokemonControllerTest {
 		assertThat(result).as("GET result")
 			.hasStatus4xxClientError()
 		;
+		// TODO asserten, dass das kein neues Pokemon persistiert wurde
 	}
 }

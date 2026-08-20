@@ -24,7 +24,7 @@ public class PokemonController {
 
 	@GetMapping({"", "/"})
 	public String listPokemon(Model model) {
-		List<Pokemon> pokemonList = pokemonService.getPokemons();
+		List<Pokemon> pokemonList = pokemonService.listPokemons();
 
 		model.addAttribute("pokemonList", pokemonList);
 		return "pokemon/list.xhtml";
@@ -32,7 +32,9 @@ public class PokemonController {
 
 	@GetMapping("/{id}")
 	public String getPokemon(@PathVariable int id, Model model) {
-		List<Pokemon> pokemonList = pokemonService.getPokemons();
+		// TODO fetch single pokemon from service
+		// TODO maybe use Optional; pokemon might not exist
+		List<Pokemon> pokemonList = pokemonService.listPokemons();
 
 		Pokemon selectedPokemon = null;
 		for (Pokemon pokemon : pokemonList) {
@@ -51,7 +53,9 @@ public class PokemonController {
 
 	@GetMapping("/{id}/update")
 	public String updatePokemon(@PathVariable int id, Model model) {
-		List<Pokemon> pokemonList = pokemonService.getPokemons();
+		// TODO fetch single pokemon from service
+		// TODO maybe use Optional; pokemon might not exist
+		List<Pokemon> pokemonList = pokemonService.listPokemons();
 
 		Pokemon selectedPokemon = null;
 		for (Pokemon pokemon : pokemonList) {
@@ -89,7 +93,7 @@ public class PokemonController {
 		return "redirect:/pokemon/" + id;
 	}
 
-	@GetMapping("/{id}/delete")
+	@DeleteMapping("/{id}/delete")
 	public String deletePokemon(@PathVariable int id, Model model) {
 		pokemonService.deletePokemon(id);
 		return "redirect:/pokemon/";

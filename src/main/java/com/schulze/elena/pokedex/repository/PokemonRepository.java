@@ -13,16 +13,22 @@ import java.util.List;
 @Repository
 public class PokemonRepository {
 
+	// TODO SQL Injections verhindern, mit prepared statements ... überall
+
 	@Autowired
 	private JdbcTemplate jdbcTemplate;
 
 	public void update(Pokemon pokemon) {
+
 		jdbcTemplate.update(
 			"UPDATE pokemon " +
-				"SET name = '" + pokemon.getName() + "', " +
+				"SET name = ?, " +
 				"trainer_fk = " + pokemon.getTrainer().getId() + ", " +
 				"pokedex_number = '" + pokemon.getPokedexNumber() + "' " +
-				"WHERE id = " + pokemon.getId());
+				"WHERE id = " + pokemon.getId(),
+				pokemon.getName()
+
+		);
 
 		jdbcTemplate.update(
 			"DELETE FROM pokemon_type " +
@@ -63,6 +69,8 @@ public class PokemonRepository {
 		return id;
 	}
 
+
+	// TODO maybe SELECT-Teil in Methode auslagern
 	public List<Pokemon> listAll() {
 
 		return jdbcTemplate.query(
@@ -82,6 +90,7 @@ public class PokemonRepository {
 		);
 	}
 
+	// TODO maybe für SELECT-Teil die neue Methode verwenden
 	public Pokemon getPokemonById(int id) {
 		return jdbcTemplate.queryForObject(
 			"SELECT " +
@@ -105,6 +114,7 @@ public class PokemonRepository {
 		jdbcTemplate.update("DELETE FROM pokemon WHERE id = " + id);
 	}
 
+	// TODO eine RowMapper ist genug
 	private class PokemonMapper implements RowMapper<Pokemon> {
 		public Pokemon mapRow(ResultSet resultSet, int rowNum) throws SQLException {
 			return new Pokemon(
