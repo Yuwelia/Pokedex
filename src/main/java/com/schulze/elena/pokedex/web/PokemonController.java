@@ -32,19 +32,13 @@ public class PokemonController {
 
 	@GetMapping("/{id}")
 	public String getPokemon(@PathVariable int id, Model model) {
-		// TODO fetch single pokemon from service
 		// TODO maybe use Optional; pokemon might not exist
 		List<Pokemon> pokemonList = pokemonService.listPokemons();
 
-		Pokemon selectedPokemon = null;
-		for (Pokemon pokemon : pokemonList) {
-			if (pokemon.getId() == id) {
-				selectedPokemon = pokemon;
-				model.addAttribute("pokemon", pokemon);
-			}
-		}
+		Pokemon pokemon = pokemonService.getPokemonById(id);
+		model.addAttribute("pokemon", pokemon);
 
-		if (selectedPokemon == null) {
+		if (pokemon == null) {
 			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Pokemon not found");
 		}
 
@@ -53,20 +47,14 @@ public class PokemonController {
 
 	@GetMapping("/{id}/update")
 	public String updatePokemon(@PathVariable int id, Model model) {
-		// TODO fetch single pokemon from service
 		// TODO maybe use Optional; pokemon might not exist
-		List<Pokemon> pokemonList = pokemonService.listPokemons();
 
-		Pokemon selectedPokemon = null;
-		for (Pokemon pokemon : pokemonList) {
-			if (pokemon.getId() == id) {
-				selectedPokemon = pokemon;
-				model.addAttribute("pokemon", pokemon);
-			}
-		}
+		Pokemon pokemon = pokemonService.getPokemonById(id);
+		model.addAttribute("pokemon", pokemon);
+
 		model.addAttribute("trainerList", trainerService.getTrainerList());
 
-		if (selectedPokemon == null) {
+		if (pokemon == null) {
 			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Pokemon not found");
 		}
 

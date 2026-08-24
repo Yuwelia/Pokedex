@@ -7,7 +7,6 @@ import com.schulze.elena.pokedex.repository.TypeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -26,14 +25,13 @@ public class PokemonService {
 
 		setTypeAndReactions(pokemons);
 
-		// TODO Trainer gleich im PokemonRepository erzeugen
-		setTrainer(pokemons);
-
 		return pokemons;
 	}
 
 
-	// TODO getPokemonById implementieren und verwenden
+	public Pokemon getPokemonById(int id) {
+		return pokemonRepository.getPokemonById(id);
+	}
 
 	public void updatePokemon(Pokemon pokemon) {
 		pokemonRepository.update(pokemon);
@@ -51,34 +49,25 @@ public class PokemonService {
 		for (Pokemon pokemon : pokemons) {
 
 			// TODO Schönere typen machen
-			List<String> types = Arrays.stream(pokemon.getTypes()
+			String[] types = pokemon.getTypes()
 				.replaceAll("[\\[\\]]", "")
-				.split(","))
-				.toList()
-				;
+				.split(",");
 
-//			String typ1 = types[0].trim();
-//			String typ2;
-//			if (types.length > 1) {
-//				typ2 = types[1].trim();
-//			} else {
-//				typ2 = null;
-//			}
+			String typ1 = types[0].trim();
+			String typ2;
+			if (types.length > 1) {
+				typ2 = types[1].trim();
+			} else {
+				typ2 = null;
+			}
 
-			List<String> strongAgainstList = typeRepository.getStrongAgainstTypes(types);
+			List<String> strongAgainstList = typeRepository.getStrongAgainstTypes(typ1, typ2);
 			String strongAgainst = strongAgainstList.stream().collect(Collectors.joining(", "));
 			pokemon.setStrongAgainst(strongAgainst);
 
-			List<String> vulnerableToList = typeRepository.getVulnerableToTypes(types);
+			List<String> vulnerableToList = typeRepository.getVulnerableToTypes(typ1, typ2);
 			String vulnerableTo = vulnerableToList.stream().collect(Collectors.joining(", "));
 			pokemon.setVulnerableTo(vulnerableTo);
-		}
-	}
-
-	private void setTrainer(List<Pokemon> pokemons) {
-		for (Pokemon pokemon : pokemons) {
-			pokemon.setTrainer(trainerRepository.getTrainerByPokemonId(pokemon.getId()));
-//			pokemon.getTrainerByPokemonId().setPokemonList(trainerRepository.getTrainerPokemonList());
 		}
 	}
 }

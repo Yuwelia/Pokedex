@@ -22,6 +22,14 @@ public class Pokemon {
 		this.types = types;
 	}
 
+	public Pokemon(int id,int pokedexNumber, String name, String types, Trainer trainer) {
+		this.id = id;
+		this.pokedexNumber = pokedexNumber;
+		this.name = name;
+		this.types = types;
+		this.trainer = trainer;
+	}
+
 	public Pokemon() {}
 
 	public int getId() {
