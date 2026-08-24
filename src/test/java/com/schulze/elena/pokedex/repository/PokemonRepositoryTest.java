@@ -36,6 +36,9 @@ class PokemonRepositoryTest {
 	public void testAddPokemon() {
 		Trainer trainer = new Trainer();
 		trainer.setId(2);
+		trainer.setName("N (Natural Harmonia Gropius)");
+		trainer.setRegion("Einall");
+		trainer.setTitle("König");
 
 		Pokemon newPokemon = new Pokemon();
 		newPokemon.setName("Felilou");
@@ -45,19 +48,17 @@ class PokemonRepositoryTest {
 
 		int id = pokemonRepository.add(newPokemon);
 
-//		List<Pokemon> pokemons = pokemonService.getPokemons();
-
-//		Pokemon foundPokemon = pokemons.get(pokemons.size() - 1);
 		Pokemon addedPokemon = pokemonRepository.getPokemonById(id);
-		Trainer trainerForAddedPokemon = trainerRepository.getTrainerByPokemonId(id);
 
 		assertThat(addedPokemon.getId()).isEqualTo(id);
 		assertThat(addedPokemon.getName()).isEqualTo("Felilou");
 		assertThat(addedPokemon.getPokedexNumber()).isEqualTo(509);
 		assertThat(addedPokemon.getTypes()).isEqualTo("Unlicht");
-		//assertThat(addedPokemon.getTrainer().getId()).isEqualTo(trainer.getId());
-//		assertThat(addedPokemon.getStrongAgainst()).isEqualTo("Geist, Psycho");
-//		assertThat(addedPokemon.getVulnerableTo()).isEqualTo("Fee, Kampf, Käfer");
-		// TODO assertions for trainer
+		assertThat(addedPokemon.getTrainer().getId()).isEqualTo(trainer.getId());
+		assertThat(addedPokemon.getTrainer().getName()).isEqualTo(trainer.getName());
+		assertThat(addedPokemon.getTrainer().getTitle()).isEqualTo(trainer.getTitle());
+		assertThat(addedPokemon.getTrainer().getRegion()).isEqualTo(trainer.getRegion());
+
+
 	}
 }
