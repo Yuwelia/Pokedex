@@ -30,8 +30,6 @@ class PokemonControllerTest {
 	@Autowired
 	private JdbcTemplate jdbcTemplate;
 
-	// TODO einheitliches Namensschema für Tests (ohne "_test" hinten dran, mit "test" vorne dran)
-
 	@Test
 	void testListPokemon() {
 		MvcTestResult result = mockMvcTester.get().uri("/pokemon").exchange();
@@ -48,7 +46,7 @@ class PokemonControllerTest {
 	}
 
 	@Test
-	void getPokemon() {
+	void testGetPokemon() {
 		MvcTestResult result = mockMvcTester.get().uri("/pokemon/1").exchange();
 
 		assertThat(result).as("GET result")
@@ -59,9 +57,11 @@ class PokemonControllerTest {
 			.extracting(model -> model.get("pokemon"))
 			.isInstanceOf(Pokemon.class)
 			.satisfies(pokemonObject -> {
-				// TODO ganzes Pokemon asserten
 				Pokemon pokemon = (Pokemon)pokemonObject;
 				assertThat(pokemon.getName()).isEqualTo("Mimigma");
+				assertThat(pokemon.getId()).isEqualTo(1);
+				assertThat(pokemon.getTypes()).isEqualTo("Geist, Fee");
+				assertThat(pokemon.getPokedexNumber()).isEqualTo(778);
 			})
 		;
 	}
@@ -86,7 +86,7 @@ class PokemonControllerTest {
 	}
 
 	@Test
-	void testUpdatePokemon_get_Failed() {
+	void testUpdatePokemon_get_failed() {
 		MvcTestResult result = mockMvcTester.get().uri("/pokemon/123456789/update").exchange();
 
 		assertThat(result).as("GET result")
@@ -95,7 +95,7 @@ class PokemonControllerTest {
 	}
 
 	@Test
-	void updatePokemon_put_test() {
+	void testUpdatePokemon_put() {
 		int id = 1;
 		MvcTestResult result = mockMvcTester.put().uri("/pokemon/" + id + "/update")
 			.formField("pokedexNumber", "567")
@@ -104,24 +104,43 @@ class PokemonControllerTest {
 			.formField("trainer.id", "1")
 			.exchange();
 
-		Pokemon updatedPokemon = pokemonRepository.getPokemonById(id);
+		Pokemon updatedPokemon = pokemonService.listPokemons().get(0);
 
 		assertThat(updatedPokemon.getName()).isEqualTo("newName");
 		assertThat(updatedPokemon.getTypes()).isEqualTo("Feuer");
 		assertThat(updatedPokemon.getPokedexNumber()).isEqualTo(567);
-		// TODO assert trainer
+		assertThat(updatedPokemon.getTrainer().getId()).isEqualTo(1);
 
 		assertThat(result).as("GET result")
 			.hasStatus3xxRedirection()
 		;
 	}
 
-	// TODO negativtest für update
+	@Test
+	void testUpdatePokemon_put_failed() {
+		int id = 1;
+		MvcTestResult result = mockMvcTester.put().uri("/pokemon/" + id + "/update")
+			.formField("pokedexNumber", "abc")
+			.formField("name", "newName")
+			.formField("types", "abc")
+			.formField("trainer.id", "123456789")
+			.exchange();
+
+		Pokemon updatedPokemon = pokemonService.getPokemonById(id);
+
+		assertThat(updatedPokemon.getName()).isEqualTo("Mimigma");
+		assertThat(updatedPokemon.getTypes()).isEqualTo("Geist, Fee");
+		assertThat(updatedPokemon.getPokedexNumber()).isEqualTo(778);
+
+		assertThat(result).as("GET result")
+			.hasStatus4xxClientError()
+		;
+	}
 
 	@Test
-	void deletePokemon_test() {
+	void testDeletePokemon() {
 		int beforeDelete = pokemonService.listPokemons().size();
-		MvcTestResult result = mockMvcTester.get().uri("/pokemon/1/delete").exchange();
+		MvcTestResult result = mockMvcTester.delete().uri("/pokemon/1/delete").exchange();
 		int afterDelete = pokemonService.listPokemons().size();
 
 		assertThat(beforeDelete - afterDelete).isEqualTo(1);
@@ -133,25 +152,13 @@ class PokemonControllerTest {
 		;
 	}
 
-	// TODO helper runter
-	private void assertThatPokemonIsDeleted(int id) {
-
-		int foundObjects = jdbcTemplate.queryForObject(
-			"SELECT COUNT(*) FROM pokemon WHERE id = " + id,
-			Integer.class
-		);
-		assertThat(foundObjects).isZero();
-	}
-
-
 	@Test
-	void deletePokemonFailed_test() {
+	void testDeletePokemon_failed() {
 		int beforeDelete = pokemonService.listPokemons().size();
-		MvcTestResult result = mockMvcTester.get().uri("/pokemon/123456789/delete").exchange();
+		MvcTestResult result = mockMvcTester.delete().uri("/pokemon/123456789/delete").exchange();
 		int afterDelete = pokemonService.listPokemons().size();
 
 		assertThat(afterDelete).isEqualTo(beforeDelete);
-		//assertThatPokemonIsDeleted(123456789);
 		assertThat(result).as("GET result")
 			.hasStatus3xxRedirection()
 			.hasViewName("redirect:/pokemon/")
@@ -159,7 +166,7 @@ class PokemonControllerTest {
 	}
 
 	@Test
-	void createPokemon_post_test() {
+	void testCreatePokemon_post() {
 		MvcTestResult result = mockMvcTester.post().uri("/pokemon/add")
 			.formField("pokedexNumber", "509")
 			.formField("name", "Felilou")
@@ -171,21 +178,35 @@ class PokemonControllerTest {
 			.hasStatus3xxRedirection()
 			.hasViewName("redirect:/pokemon/8")
 		;
-		// TODO asserten, dass das Pokemon persistiert ist
+		Pokemon newPokemon = pokemonService.getPokemonById(8);
+		assertThat(newPokemon.getName()).isEqualTo("Felilou");
+		assertThat(newPokemon.getTypes()).isEqualTo("Unlicht");
+		assertThat(newPokemon.getPokedexNumber()).isEqualTo(509);
 	}
 
 	@Test
-	void createPokemonFailed_post_test() {
+	void testCreatePokemon_post_failed() {
+		int beforeAdd = pokemonService.listPokemons().size();
 		MvcTestResult result = mockMvcTester.post().uri("/pokemon/add")
 			.formField("pokedexNumber", "abc")
 			.formField("name", "Felilou")
 			.formField("types", "abc")
 			.formField("trainer.id", "123456789")
 			.exchange();
+		int afterAdd = pokemonService.listPokemons().size();
 
 		assertThat(result).as("GET result")
 			.hasStatus4xxClientError()
 		;
-		// TODO asserten, dass das kein neues Pokemon persistiert wurde
+		assertThat(afterAdd).isEqualTo(beforeAdd);
+	}
+
+	private void assertThatPokemonIsDeleted(int id) {
+		int foundObjects = jdbcTemplate.queryForObject(
+			"SELECT COUNT(*) FROM pokemon WHERE id = " + id,
+			Integer.class
+		);
+
+		assertThat(foundObjects).isZero();
 	}
 }
