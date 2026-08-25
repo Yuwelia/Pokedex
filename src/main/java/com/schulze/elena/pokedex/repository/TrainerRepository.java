@@ -25,9 +25,9 @@ public class TrainerRepository {
 				"trainer.id " +
 				"FROM trainer, pokemon " +
 				"WHERE trainer.id = pokemon.trainer_fk " +
-				"AND pokemon.id = " + pokemonId
-			,
-			new TrainerMapper()
+				"AND pokemon.id = ?",
+			new TrainerMapper(),
+			pokemonId
 		);
 	}
 
@@ -39,9 +39,9 @@ public class TrainerRepository {
 				"trainer.region, " +
 				"trainer.id " +
 				"FROM trainer " +
-				"WHERE trainer.id = " + trainerId
-			,
-			new TrainerMapper()
+				"WHERE trainer.id = ?",
+			new TrainerMapper(),
+			trainerId
 		);
 	}
 

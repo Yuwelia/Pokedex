@@ -9,6 +9,9 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
+
+import static java.util.stream.Collectors.joining;
 
 @Repository
 public class TypeRepository {
@@ -16,7 +19,8 @@ public class TypeRepository {
 	@Autowired
 	private JdbcTemplate jdbcTemplate;
 
-	public List<String> getStrongAgainstTypes(List<String> types) {
+
+	public List<String> getStrongAgainstTypes(List<String> typeList) {
 
 		return jdbcTemplate.query(
 			"SELECT " +
@@ -27,12 +31,24 @@ public class TypeRepository {
 				"WHERE strong_against.type_fk IN( " +
 				"SELECT id " +
 				"FROM type " +
-				"WHERE name IN('" + types + "')); ",
-			new TypeMapper()
+				"WHERE name IN(" + typeList.stream().map(x -> "?").collect(joining(", ")) + ")); ",
+			new TypeMapper(),
+			typeList.toArray()
 		);
 	}
 
-	public List<String> getVulnerableToTypes(List<String> types) {
+	public List<String> getVulnerableToTypes(List<String> typeList) {
+		StringBuilder s = new StringBuilder("?");
+
+		Object[] types = new Object[typeList.size()];
+
+		for (int i = 0; i < typeList.size(); i++) {
+
+			types[i] = typeList.get(i);
+			if (i < typeList.size() - 1) {
+				s.append(", ?");
+			}
+		}
 
 		return jdbcTemplate.query(
 			"SELECT " +
@@ -43,8 +59,9 @@ public class TypeRepository {
 				"WHERE vulnerable_to.type_fk IN( " +
 				"SELECT id " +
 				"FROM type " +
-				"WHERE name IN('" + types + "')); ",
-			new TypeMapper()
+				"WHERE name IN(" + s + ")); ",
+			new TypeMapper(),
+			types
 		);
 	}
 
