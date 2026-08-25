@@ -7,7 +7,9 @@ import com.schulze.elena.pokedex.repository.TypeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -23,14 +25,18 @@ public class PokemonService {
 	public List<Pokemon> listPokemons() {
 		List<Pokemon> pokemons = pokemonRepository.listAll();
 
-		setTypeAndReactions(pokemons);
+		for (Pokemon pokemon : pokemons) {
+			setTypeAndReactions(pokemon);
+		}
 
 		return pokemons;
 	}
 
 
-	public Pokemon getPokemonById(int id) {
-		return pokemonRepository.getPokemonById(id);
+	public Optional<Pokemon> getPokemonById(int id) {
+		Optional<Pokemon> pokemon = pokemonRepository.getPokemonById(id);
+		pokemon.ifPresent(this::setTypeAndReactions);
+		return pokemon;
 	}
 
 	public void updatePokemon(Pokemon pokemon) {
@@ -45,30 +51,20 @@ public class PokemonService {
 		pokemonRepository.deletePokemon(id);
 	}
 
-	private void setTypeAndReactions(List<Pokemon> pokemons) {
-		for (Pokemon pokemon : pokemons) {
-
-			// TODO Schönere typen machen
-			String[] types = pokemon.getTypes()
+	private void setTypeAndReactions(Pokemon pokemon) {
+		List<String> types = (Arrays.stream(pokemon.getTypes()
 				.replaceAll("[\\[\\]]", "")
-				.split(",");
+				.split(","))
+			.map(String::trim)
+			.toList()
+		);
 
-			String typ1 = types[0].trim();
-			String typ2;
-			if (types.length > 1) {
-				typ2 = types[1].trim();
-			} else {
-				typ2 = null;
-			}
 
-			List<String> strongAgainstList = typeRepository.getStrongAgainstTypes(typ1, typ2);
-			String strongAgainst = strongAgainstList.stream().collect(Collectors.joining(", "));
-			pokemon.setStrongAgainst(strongAgainst);
+		String strongAgainst = String.join(", ", typeRepository.getStrongAgainstTypes(types));
+		pokemon.setStrongAgainst(strongAgainst);
 
-			List<String> vulnerableToList = typeRepository.getVulnerableToTypes(typ1, typ2);
-			String vulnerableTo = vulnerableToList.stream().collect(Collectors.joining(", "));
-			pokemon.setVulnerableTo(vulnerableTo);
-		}
+		String vulnerableTo = String.join(", ", typeRepository.getVulnerableToTypes(types));
+		pokemon.setVulnerableTo(vulnerableTo);
 	}
 }
 

@@ -48,7 +48,7 @@ class PokemonRepositoryTest {
 
 		int id = pokemonRepository.add(newPokemon);
 
-		Pokemon addedPokemon = pokemonRepository.getPokemonById(id);
+		Pokemon addedPokemon = pokemonRepository.getPokemonById(id).get();
 
 		assertThat(addedPokemon.getId()).isEqualTo(id);
 		assertThat(addedPokemon.getName()).isEqualTo("Felilou");

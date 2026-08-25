@@ -126,7 +126,7 @@ class PokemonControllerTest {
 			.formField("trainer.id", "123456789")
 			.exchange();
 
-		Pokemon updatedPokemon = pokemonService.getPokemonById(id);
+		Pokemon updatedPokemon = pokemonService.getPokemonById(id).get();
 
 		assertThat(updatedPokemon.getName()).isEqualTo("Mimigma");
 		assertThat(updatedPokemon.getTypes()).isEqualTo("Geist, Fee");
@@ -178,7 +178,7 @@ class PokemonControllerTest {
 			.hasStatus3xxRedirection()
 			.hasViewName("redirect:/pokemon/8")
 		;
-		Pokemon newPokemon = pokemonService.getPokemonById(8);
+		Pokemon newPokemon = pokemonService.getPokemonById(8).get();
 		assertThat(newPokemon.getName()).isEqualTo("Felilou");
 		assertThat(newPokemon.getTypes()).isEqualTo("Unlicht");
 		assertThat(newPokemon.getPokedexNumber()).isEqualTo(509);

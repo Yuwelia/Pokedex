@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
+import java.util.Optional;
 
 @Controller
 @RequestMapping("/pokemon")
@@ -32,31 +33,21 @@ public class PokemonController {
 
 	@GetMapping("/{id}")
 	public String getPokemon(@PathVariable int id, Model model) {
-		// TODO maybe use Optional; pokemon might not exist
-		List<Pokemon> pokemonList = pokemonService.listPokemons();
+		Pokemon pokemon = pokemonService.getPokemonById(id)
+			.orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Pokemon not found"));
 
-		Pokemon pokemon = pokemonService.getPokemonById(id);
 		model.addAttribute("pokemon", pokemon);
-
-		if (pokemon == null) {
-			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Pokemon not found");
-		}
 
 		return "pokemon/detail.xhtml";
 	}
 
 	@GetMapping("/{id}/update")
 	public String updatePokemon(@PathVariable int id, Model model) {
-		// TODO maybe use Optional; pokemon might not exist
+		Pokemon pokemon = pokemonService.getPokemonById(id)
+			.orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Pokemon not found"));
 
-		Pokemon pokemon = pokemonService.getPokemonById(id);
 		model.addAttribute("pokemon", pokemon);
-
 		model.addAttribute("trainerList", trainerService.getTrainerList());
-
-		if (pokemon == null) {
-			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Pokemon not found");
-		}
 
 		return "pokemon/update.xhtml";
 	}

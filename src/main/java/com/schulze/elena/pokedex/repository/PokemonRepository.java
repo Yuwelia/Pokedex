@@ -3,6 +3,7 @@ package com.schulze.elena.pokedex.repository;
 import com.schulze.elena.pokedex.model.Pokemon;
 import com.schulze.elena.pokedex.model.Trainer;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
@@ -10,6 +11,7 @@ import org.springframework.stereotype.Repository;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public class PokemonRepository {
@@ -101,14 +103,18 @@ public class PokemonRepository {
 		);
 	}
 
-	public Pokemon getPokemonById(int id) {
-		return jdbcTemplate.queryForObject(
-			 selectStmt() +
-				"WHERE pokemon.id = ? " +
-				"GROUP BY pokemon.id",
-			new PokemonMapper(),
-			id
-		);
+	public Optional<Pokemon> getPokemonById(int id) {
+		try{
+			return Optional.of(jdbcTemplate.queryForObject(
+				 selectStmt() +
+					"WHERE pokemon.id = ? " +
+					"GROUP BY pokemon.id",
+				new PokemonMapper(),
+				id
+			));
+		} catch(EmptyResultDataAccessException exception){
+			return Optional.empty();
+		}
 	}
 
 	private String selectStmt() {
