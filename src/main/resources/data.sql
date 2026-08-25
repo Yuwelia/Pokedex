@@ -17,7 +17,6 @@ VALUES
     ((SELECT NEXTVAL('pokemon_seq')), 334, 'Altaria', 5),
     ((SELECT NEXTVAL('pokemon_seq')), 376, 'Metagross', 6);
 
--- TODO use sequence, eventually
 INSERT INTO type (id, name)
 VALUES
     (1, 'Feuer'),
