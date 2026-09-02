@@ -1,6 +1,7 @@
 package com.schulze.elena.pokedex.web;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.InstanceOfAssertFactories.LIST;
 
 import com.schulze.elena.pokedex.model.Pokemon;
 import com.schulze.elena.pokedex.repository.PokemonRepository;
@@ -39,7 +40,7 @@ class PokemonControllerTest {
 			.hasViewName("pokemon/list.xhtml")
 			.model().as("GET result model")
 			.containsKey("pokemonList")
-			.extracting(model -> model.get("pokemonList"), InstanceOfAssertFactories.LIST)
+			.extracting(model -> model.get("pokemonList"), LIST)
 			.extracting(pokemon -> ((Pokemon)pokemon).getName())
 			.containsExactly("Mimigma", "Reshiram", "Feelinara", "Rayquaza", "Flurmel", "Altaria", "Metagross")
 		;
