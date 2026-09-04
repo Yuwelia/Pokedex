@@ -9,6 +9,7 @@ Projekt erstellen
   - JDBC API
   - H2 Database
   - Spring Boot DevTools
+  - Apache Commons Lang
 - Create
 
 application.propertie:
@@ -27,7 +28,6 @@ Datenbank Schema erstellen
   MAXVALUE x
   INCREMENT BY x;
   - -> für IDs
-
 
 Datenbank Daten erstellen
 - neues File unter src/main/resources/data.sql
@@ -50,8 +50,23 @@ Packet Structure erstellen
 Über der Repository Klasse
 @Repository
 
-Am Anfang von einem xhtml File "<html xmlns:th="http://www.thymeleaf.org" lang="de">
-"
+Methoden in Model
+```java
+@Override
+	public boolean equals(Object object) {
+		return EqualsBuilder.reflectionEquals(this, object);
+	}
+
+	@Override
+	public int hashCode() {
+		return HashCodeBuilder.reflectionHashCode(this);
+	}
+```
+Am Anfang von einem xhtml File
+```xml
+<html xmlns:th="http://www.thymeleaf.org" lang="de">
+```
+
 
 Für Integrationstest (Controller) 
 - @Autowired private MockMvcTester mockMvcTester; -> Hilfsklasse um Controller zu testen
